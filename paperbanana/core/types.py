@@ -90,7 +90,8 @@ class DimensionResult(BaseModel):
 
     winner: str = Field(description="Model | Human | Both are good | Both are bad")
     score: float = Field(
-        ge=0.0, le=100.0,
+        ge=0.0,
+        le=100.0,
         description="100 (Model wins), 0 (Human wins), 50 (Tie)",
     )
     reasoning: str = Field(default="", description="Comparison reasoning")
@@ -109,11 +110,10 @@ class EvaluationScore(BaseModel):
     conciseness: DimensionResult
     readability: DimensionResult
     aesthetics: DimensionResult
-    overall_winner: str = Field(
-        description="Hierarchical aggregation result"
-    )
+    overall_winner: str = Field(description="Hierarchical aggregation result")
     overall_score: float = Field(
-        ge=0.0, le=100.0,
+        ge=0.0,
+        le=100.0,
         description="100 (Model wins), 0 (Human wins), 50 (Tie)",
     )
 

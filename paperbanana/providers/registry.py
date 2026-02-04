@@ -27,18 +27,13 @@ class ProviderRegistry:
                 model=settings.vlm_model,
             )
         else:
-            raise ValueError(
-                f"Unknown VLM provider: {provider}. "
-                f"Available: gemini"
-            )
+            raise ValueError(f"Unknown VLM provider: {provider}. Available: gemini")
 
     @staticmethod
     def create_image_gen(settings: Settings) -> ImageGenProvider:
         """Create an image generation provider based on settings."""
         provider = settings.image_provider.lower()
-        logger.info(
-            "Creating image gen provider", provider=provider, model=settings.image_model
-        )
+        logger.info("Creating image gen provider", provider=provider, model=settings.image_model)
 
         if provider == "google_imagen":
             from paperbanana.providers.image_gen.google_imagen import GoogleImagenGen
@@ -48,7 +43,4 @@ class ProviderRegistry:
                 model=settings.image_model,
             )
         else:
-            raise ValueError(
-                f"Unknown image provider: {provider}. "
-                f"Available: google_imagen"
-            )
+            raise ValueError(f"Unknown image provider: {provider}. Available: google_imagen")

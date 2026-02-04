@@ -25,33 +25,23 @@ console = Console()
 
 @app.command()
 def generate(
-    input: str = typer.Option(
-        ..., "--input", "-i", help="Path to methodology text file"
-    ),
+    input: str = typer.Option(..., "--input", "-i", help="Path to methodology text file"),
     caption: str = typer.Option(
         ..., "--caption", "-c", help="Figure caption / communicative intent"
     ),
-    output: Optional[str] = typer.Option(
-        None, "--output", "-o", help="Output image path"
-    ),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Output image path"),
     vlm_provider: Optional[str] = typer.Option(
         None, "--vlm-provider", help="VLM provider (gemini)"
     ),
-    vlm_model: Optional[str] = typer.Option(
-        None, "--vlm-model", help="VLM model name"
-    ),
+    vlm_model: Optional[str] = typer.Option(None, "--vlm-model", help="VLM model name"),
     image_provider: Optional[str] = typer.Option(
         None, "--image-provider", help="Image gen provider"
     ),
-    image_model: Optional[str] = typer.Option(
-        None, "--image-model", help="Image gen model name"
-    ),
+    image_model: Optional[str] = typer.Option(None, "--image-model", help="Image gen model name"),
     iterations: Optional[int] = typer.Option(
         None, "--iterations", "-n", help="Refinement iterations"
     ),
-    config: Optional[str] = typer.Option(
-        None, "--config", help="Path to config YAML file"
-    ),
+    config: Optional[str] = typer.Option(None, "--config", help="Path to config YAML file"),
 ):
     """Generate a methodology diagram from a text description."""
     # Load source text
@@ -81,6 +71,7 @@ def generate(
         settings = Settings.from_yaml(config, **overrides)
     else:
         from dotenv import load_dotenv
+
         load_dotenv()
         settings = Settings(**overrides)
 
@@ -91,13 +82,15 @@ def generate(
         diagram_type=DiagramType.METHODOLOGY,
     )
 
-    console.print(Panel.fit(
-        f"[bold]PaperBanana[/bold] - Generating Methodology Diagram\n\n"
-        f"VLM: {settings.vlm_provider} / {settings.vlm_model}\n"
-        f"Image: {settings.image_provider} / {settings.image_model}\n"
-        f"Iterations: {settings.refinement_iterations}",
-        border_style="blue",
-    ))
+    console.print(
+        Panel.fit(
+            f"[bold]PaperBanana[/bold] - Generating Methodology Diagram\n\n"
+            f"VLM: {settings.vlm_provider} / {settings.vlm_model}\n"
+            f"Image: {settings.image_provider} / {settings.image_model}\n"
+            f"Iterations: {settings.refinement_iterations}",
+            border_style="blue",
+        )
+    )
 
     # Run pipeline
     from paperbanana.core.pipeline import PaperBananaPipeline
@@ -135,8 +128,10 @@ def plot(
 
     # Load data
     import json as json_mod
+
     if data_path.suffix == ".csv":
         import pandas as pd
+
         df = pd.read_csv(data_path)
         raw_data = df.to_dict(orient="records")
         source_context = (
@@ -149,6 +144,7 @@ def plot(
         source_context = f"JSON data:\n{json_mod.dumps(raw_data, indent=2)[:2000]}"
 
     from dotenv import load_dotenv
+
     load_dotenv()
 
     settings = Settings(
@@ -163,12 +159,14 @@ def plot(
         raw_data={"data": raw_data},
     )
 
-    console.print(Panel.fit(
-        f"[bold]PaperBanana[/bold] - Generating Statistical Plot\n\n"
-        f"Data: {data_path.name}\n"
-        f"Intent: {intent}",
-        border_style="green",
-    ))
+    console.print(
+        Panel.fit(
+            f"[bold]PaperBanana[/bold] - Generating Statistical Plot\n\n"
+            f"Data: {data_path.name}\n"
+            f"Intent: {intent}",
+            border_style="green",
+        )
+    )
 
     from paperbanana.core.pipeline import PaperBananaPipeline
 
@@ -183,16 +181,19 @@ def plot(
 @app.command()
 def setup():
     """Interactive setup wizard — get generating in 2 minutes with FREE APIs."""
-    console.print(Panel.fit(
-        "[bold]Welcome to PaperBanana Setup[/bold]\n\n"
-        "We'll set up FREE API keys so you can start generating diagrams.",
-        border_style="yellow",
-    ))
+    console.print(
+        Panel.fit(
+            "[bold]Welcome to PaperBanana Setup[/bold]\n\n"
+            "We'll set up FREE API keys so you can start generating diagrams.",
+            border_style="yellow",
+        )
+    )
 
     console.print("\n[bold]Step 1: Google Gemini API Key[/bold] (FREE, no credit card)")
     console.print("This powers the AI agents that plan and critique your diagrams.\n")
 
     import webbrowser
+
     open_browser = Prompt.ask(
         "Open browser to get a free Gemini API key?",
         choices=["y", "n"],
@@ -220,18 +221,10 @@ def setup():
 
 @app.command()
 def evaluate(
-    generated: str = typer.Option(
-        ..., "--generated", "-g", help="Path to generated image"
-    ),
-    context: str = typer.Option(
-        ..., "--context", help="Path to source context text file"
-    ),
-    caption: str = typer.Option(
-        ..., "--caption", "-c", help="Figure caption"
-    ),
-    reference: str = typer.Option(
-        ..., "--reference", "-r", help="Path to human reference image"
-    ),
+    generated: str = typer.Option(..., "--generated", "-g", help="Path to generated image"),
+    context: str = typer.Option(..., "--context", help="Path to source context text file"),
+    caption: str = typer.Option(..., "--caption", "-c", help="Figure caption"),
+    reference: str = typer.Option(..., "--reference", "-r", help="Path to human reference image"),
     vlm_provider: str = typer.Option(
         "gemini", "--vlm-provider", help="VLM provider for evaluation"
     ),
@@ -252,10 +245,12 @@ def evaluate(
     context_text = Path(context).read_text(encoding="utf-8")
 
     from dotenv import load_dotenv
+
     load_dotenv()
 
     settings = Settings(vlm_provider=vlm_provider)
     from paperbanana.providers.registry import ProviderRegistry
+
     vlm = ProviderRegistry.create_vlm(settings)
 
     judge = VLMJudge(vlm)
@@ -276,12 +271,14 @@ def evaluate(
         result = getattr(scores, dim)
         dim_lines.append(f"{dim.capitalize():14s} {result.winner}")
 
-    console.print(Panel.fit(
-        "[bold]Evaluation Results (Comparative)[/bold]\n\n"
-        + "\n".join(dim_lines)
-        + f"\n[bold]{'Overall':14s} {scores.overall_winner}[/bold]",
-        border_style="cyan",
-    ))
+    console.print(
+        Panel.fit(
+            "[bold]Evaluation Results (Comparative)[/bold]\n\n"
+            + "\n".join(dim_lines)
+            + f"\n[bold]{'Overall':14s} {scores.overall_winner}[/bold]",
+            border_style="cyan",
+        )
+    )
 
     for dim in dims:
         result = getattr(scores, dim)

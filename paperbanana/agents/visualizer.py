@@ -107,6 +107,7 @@ class VisualizerAgent(BaseAgent):
         full_description = description
         if raw_data:
             import json
+
             full_description += f"\n\n## Raw Data\n```json\n{json.dumps(raw_data, indent=2)}\n```"
 
         # Load and format the plot visualizer prompt template

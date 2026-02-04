@@ -293,6 +293,7 @@ class PaperBananaPipeline:
 
         # Copy final image to output location
         import shutil
+
         shutil.copy2(final_image, final_output_path)
 
         # Build metadata
